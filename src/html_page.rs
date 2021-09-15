@@ -1,4 +1,5 @@
 use std::fs::File;
+use std::path;
 use std::io::{BufReader, BufRead, Write, Result};
     
 pub struct HtmlPage {
@@ -6,7 +7,7 @@ pub struct HtmlPage {
 }
 
 impl HtmlPage {
-    pub fn from(file_name: &str) -> Result<HtmlPage> {
+    pub fn from<P: AsRef<path::Path>>(file_name: P) -> Result<HtmlPage> {
 	let file = File::open(file_name)?;
 	let buf_reader = BufReader::new(file);
 
@@ -28,7 +29,7 @@ impl HtmlPage {
 	Ok(HtmlPage { html_body })
     }
 
-    pub fn print(&self, out_file_name: &str) -> Result<()> {
+    pub fn write_to_file<P: AsRef<path::Path>>(&self, out_file_name: P) -> Result<()> {
 	let mut out_file = File::create(out_file_name)?;
 
 	out_file.write_all(format!("<!doctype html>
