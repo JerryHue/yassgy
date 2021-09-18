@@ -2,6 +2,25 @@
 
 Yet Another Static Site Generator, Yassgy for short, is, as it name entails, a static site generator.
 
+## Requirements
+
+While Rust can compile programs into static executables, I have not tried to compile my projects in
+that way, yet. Thus, yassgy can only be used in a development environment for now.
+
+The tools you need are:
+
+- `rustc version 1.54 or above`
+- `cargo version 1.54 or above`
+
+Both tools can be installed in a bundle using `rustup`, the recommended tool to manage Rust toolchains.
+The tool can be found [here](https://www.rust-lang.org/tools/install).
+
+After you have installed Rust, run the following command in the project's root folder:
+
+```cargo build```
+
+and you should have the binary `yassgy` in the `yassgy/target/debug` directory.
+
 ## Usage
 
 Yassgy can be invoked with `yassgy`, if found in your `PATH` variable. If one invokes `yassgy` without
@@ -17,6 +36,14 @@ Yassgy accepts the following options:
 
 Yassgy is currently on development phase, so several features may be added or scrapped in accordance to
 the scope of the project. However, the core feature or Yassgy is to generate static webpages from text files.
+
+As of release 0.1, yassgy can:
+
+  - accept a nested structure of files and folders, and such structure will be kept for the output folder.
+  - mark the first line as the title of the page, as long as the line is separated by two lines and
+  there is more text after.
+
+Stay tuned for other features!
 
 ## Licensing
 
