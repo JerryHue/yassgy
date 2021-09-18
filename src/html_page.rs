@@ -6,52 +6,52 @@ use std::io;
 use std::io::{BufRead, Write};
 use std::path;
 
-
 #[derive(Debug, Clone, Copy)]
 enum ErrorKind {
-    PathNameNotTextFile
+    PathNameNotTextFile,
 }
 
 impl fmt::Display for ErrorKind {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-	match self {
-	    ErrorKind::PathNameNotTextFile => write!(f, "path to file is not txt file")
-	}
+        match self {
+            ErrorKind::PathNameNotTextFile => write!(f, "path to file is not txt file"),
+        }
     }
 }
 
 impl error::Error for ErrorKind {
     fn source(&self) -> Option<&(dyn error::Error + 'static)> {
-	None
+        None
     }
 }
-
-
 
 #[derive(Debug)]
 pub struct HtmlPage {
     file_name: path::PathBuf,
     title_from_file: Option<String>,
-    html_body: String
+    html_body: String,
 }
 
 impl HtmlPage {
     fn is_path_to_text_file<P: AsRef<path::Path>>(file_name: &P) -> io::Result<()> {
-	let file_name_ref = file_name.as_ref();
+        let file_name_ref = file_name.as_ref();
 
-	if let Some(extension) = file_name_ref.extension() {
-	    let extension = extension.to_string_lossy().to_lowercase();
-	    if extension == "txt" {
-		return Ok(());
-	    }
-	}
+        if let Some(extension) = file_name_ref.extension() {
+            let extension = extension.to_string_lossy().to_lowercase();
+            if extension == "txt" {
+                return Ok(());
+            }
+        }
 
-	Err(io::Error::new(io::ErrorKind::Other, ErrorKind::PathNameNotTextFile))
+        Err(io::Error::new(
+            io::ErrorKind::Other,
+            ErrorKind::PathNameNotTextFile,
+        ))
     }
 
     pub fn new<P: AsRef<path::Path>>(file_name: &P) -> io::Result<HtmlPage> {
-	HtmlPage::is_path_to_text_file(&file_name)?;
-	
+        HtmlPage::is_path_to_text_file(&file_name)?;
+
         let file = fs::File::open(file_name)?;
 
         let buf_reader = io::BufReader::new(file);
@@ -62,8 +62,8 @@ impl HtmlPage {
             lines.push(line_result?);
         }
 
-	let (title_from_file, lines) = HtmlPage::get_title_and_body(&lines[..]);
-	
+        let (title_from_file, lines) = HtmlPage::get_title_and_body(&lines[..]);
+
         let html_body = lines
             .split(|l| l.trim().is_empty())
             .filter(|&v| !v.is_empty())
@@ -75,64 +75,64 @@ impl HtmlPage {
             });
 
         Ok(HtmlPage {
-	    file_name: Box::new(file_name.as_ref()).to_path_buf(),
-	    title_from_file: title_from_file,
-	    html_body: html_body
-	})
+            file_name: Box::new(file_name.as_ref()).to_path_buf(),
+            title_from_file,
+            html_body,
+        })
     }
 
     fn get_title_and_body(lines: &[String]) -> (Option<String>, &[String]) {
-	let mut start = 0;
-	let mut end = 0;
+        let mut start = 0;
+        let mut end = 0;
 
-	for i in 0..lines.len() {
-	    if !lines[i].trim().is_empty() {
-		start = i;
-		break;
-	    }
-	};
+        for (i, line) in lines.iter().enumerate() {
+            if !line.trim().is_empty() {
+                start = i;
+                break;
+            }
+        }
 
-	for i in (0..lines.len()).rev() {
-	    if !lines[i].trim().is_empty() {
-		end = i;
-		break
-	    }
-	}
+        for i in (0..lines.len()).rev() {
+            if !lines[i].trim().is_empty() {
+                end = i;
+                break;
+            }
+        }
 
-	let actual_lines = &lines[start..=end];
+        let actual_lines = &lines[start..=end];
 
-	if actual_lines.len() > 3 {
-	    let first_line = &actual_lines[0];
-	    let second_line = &actual_lines[1];
-	    let third_line = &actual_lines[2];
+        if actual_lines.len() > 3 {
+            let first_line = &actual_lines[0];
+            let second_line = &actual_lines[1];
+            let third_line = &actual_lines[2];
 
-	    if second_line.is_empty() && third_line.is_empty() {
-		return (Some(first_line.clone()), &actual_lines[(start + 3)..=end]);
-	    }
-	}
+            if second_line.is_empty() && third_line.is_empty() {
+                return (Some(first_line.clone()), &actual_lines[(start + 3)..=end]);
+            }
+        }
 
-	(None, actual_lines)
+        (None, actual_lines)
     }
 
     pub fn title(&self) -> borrow::Cow<str> {
-	if let Some(title) = &self.title_from_file {
-	    return borrow::Cow::from(title.as_str());
-	}
+        if let Some(title) = &self.title_from_file {
+            return borrow::Cow::from(title.as_str());
+        }
 
-	self.file_name.file_stem().expect("").to_string_lossy()
+        self.file_name.file_stem().expect("").to_string_lossy()
     }
-    
-    pub fn write_to_file<P: AsRef<path::Path>>(&self, dir_path: P) -> io::Result<()> {
-	let output_path = dir_path
-	    .as_ref()
-	    .join(self.file_name.file_name().unwrap())
-	    .with_extension("html");
 
-	let mut out_file = fs::File::create(output_path)?;
-	
-	if self.title_from_file == None {
+    pub fn write_to_file<P: AsRef<path::Path>>(&self, dir_path: P) -> io::Result<()> {
+        let output_path = dir_path
+            .as_ref()
+            .join(self.file_name.file_name().unwrap())
+            .with_extension("html");
+
+        let mut out_file = fs::File::create(output_path)?;
+
+        if self.title_from_file == None {
             out_file.write_all(
-		format!(
+                format!(
                     "<!doctype html>
 <html lang=\"en\">
 <head>
@@ -143,10 +143,16 @@ impl HtmlPage {
 <body>
     {body}
 </body>
-</html>", title = self.title(), body = self.html_body).as_bytes()
+</html>",
+                    title = self.title(),
+                    body = self.html_body
+                )
+                .as_bytes(),
             )
-	} else {
-	    out_file.write_all(format!("<!doctype html>
+        } else {
+            out_file.write_all(
+                format!(
+                    "<!doctype html>
 <html lang=\"en\">
 <head>
     <meta charset=\"utf-8\">
@@ -157,8 +163,12 @@ impl HtmlPage {
     <h1>{title}</h1>
     {body}
 </body>
-</html>", body = self.html_body, title = self.title()).as_bytes()
-	    )
-	}
+</html>",
+                    body = self.html_body,
+                    title = self.title()
+                )
+                .as_bytes(),
+            )
+        }
     }
 }

@@ -37,7 +37,7 @@ const PKG_VERSION: &str = env!("CARGO_PKG_VERSION");
 const PKG_NAME: &str = env!("CARGO_PKG_NAME");
 
 fn main() -> std::io::Result<()> {
-	let command = Command::from(env::args());
+    let command = Command::from(env::args());
 
     let file_name = match command {
         None | Some(Command::Help) => {
@@ -59,21 +59,21 @@ fn main() -> std::io::Result<()> {
     let input_path = path::Path::new(&file_name);
 
     if input_path.is_dir() {
-	let site = StaticSite::from_directory(input_path)?;
-	site.create(path::Path::new("dist"))?;
+        let site = StaticSite::from_directory(input_path)?;
+        site.create(path::Path::new("dist"))?;
     } else if input_path.is_file() {
-	let site = StaticSite::from_file(input_path);
-	site.create(path::Path::new("dist"))?;
+        let site = StaticSite::from_file(input_path);
+        site.create(path::Path::new("dist"))?;
     }
-    
+
     Ok(())
 }
 
 fn print_help() {
-	print_version();
+    print_version();
 
-	println!("USAGE:");
-	println!("\t{} [OPTIONS]\n", PKG_NAME);
+    println!("USAGE:");
+    println!("\t{} [OPTIONS]\n", PKG_NAME);
 
     println!("OPTIONS:");
     println!("\t-v, --version\t\t\tPrint the version of the compiled package");
@@ -83,5 +83,5 @@ fn print_help() {
 }
 
 fn print_version() {
-	println!("{} version {}", PKG_NAME, PKG_VERSION);
+    println!("{} version {}", PKG_NAME, PKG_VERSION);
 }
