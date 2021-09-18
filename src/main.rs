@@ -37,7 +37,7 @@ const PKG_VERSION: &str = env!("CARGO_PKG_VERSION");
 const PKG_NAME: &str = env!("CARGO_PKG_NAME");
 
 fn main() -> std::io::Result<()> {
-    let command = Command::from(env::args());
+	let command = Command::from(env::args());
 
     let file_name = match command {
         None | Some(Command::Help) => {
@@ -70,10 +70,10 @@ fn main() -> std::io::Result<()> {
 }
 
 fn print_help() {
-    print_version();
+	print_version();
 
-    println!("USAGE:");
-    println!("\t{} [OPTIONS]\n", PKG_NAME);
+	println!("USAGE:");
+	println!("\t{} [OPTIONS]\n", PKG_NAME);
 
     println!("OPTIONS:");
     println!("\t-v, --version\t\t\tPrint the version of the compiled package");
@@ -83,5 +83,5 @@ fn print_help() {
 }
 
 fn print_version() {
-    println!("{} version {}", PKG_NAME, PKG_VERSION);
+	println!("{} version {}", PKG_NAME, PKG_VERSION);
 }
