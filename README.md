@@ -15,6 +15,11 @@ The tools you need are:
 Both tools can be installed in a bundle using `rustup`, the recommended tool to manage Rust toolchains.
 The tool can be found [here](https://www.rust-lang.org/tools/install).
 
+### If you are a Windows user
+
+Note that having installed the [`Microsoft C++ Build Tools`](https://visualstudio.microsoft.com/visual-cpp-build-tools/)
+is a requirement for `rustup`.
+
 After you have installed Rust, run the following command in the project's root folder:
 
 ```cargo build```
