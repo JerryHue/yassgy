@@ -7,6 +7,7 @@ enum Option {
     Version,
     InputPath(String),
     OutputPath(String),
+    Language(String),
 }
 
 #[derive(Debug)]
@@ -16,6 +17,7 @@ pub enum Command {
     GenerateSite {
         input_path: String,
         output_dir_path: String,
+        language_tag: String,
     },
 }
 
@@ -36,6 +38,10 @@ fn categorize_arg_tokens(mut args: Args) -> Vec<Option> {
             if let option::Option::Some(output_path) = args.next() {
                 options.push(Option::OutputPath(output_path));
             }
+        } else if arg_token == "-l" || arg_token == "--lang" {
+            if let option::Option::Some(language_tag) = args.next() {
+                options.push(Option::Language(language_tag));
+            }
         }
     }
 
@@ -43,7 +49,7 @@ fn categorize_arg_tokens(mut args: Args) -> Vec<Option> {
 }
 
 fn parse_opts_as_command(opts: Vec<Option>) -> Command {
-    if opts.len() == 0 {
+    if opts.is_empty() {
         return Command::PrintHelp;
     }
 
@@ -55,31 +61,85 @@ fn parse_opts_as_command(opts: Vec<Option>) -> Command {
         Some(Option::Help) => Command::PrintHelp,
         Some(Option::Version) => Command::PrintVersion,
         Some(Option::InputPath(input_path)) => {
-            let mut output_dir_path = String::from("dist");
+            let mut output_dir_path = None;
+            let mut language_tag = None;
 
             while let Some(option) = opts.next() {
                 if let Option::OutputPath(output_path) = option {
-                    output_dir_path = output_path;
-                    break;
+                    if output_dir_path == None {
+                        output_dir_path = Some(output_path);
+                    }
+                } else if let Option::Language(tag) = option {
+                    if language_tag == None {
+                        language_tag = Some(tag);
+                    }
                 }
             }
+
+            let output_dir_path = output_dir_path.unwrap_or(String::from("dist"));
+            let language_tag = language_tag.unwrap_or(String::from("en-CA"));
 
             Command::GenerateSite {
                 input_path,
                 output_dir_path,
+                language_tag,
             }
         }
         Some(Option::OutputPath(output_dir_path)) => {
+            let mut input_path = None;
+            let mut language_tag = None;
+
             while let Some(option) = opts.next() {
-                if let Option::InputPath(input_path) = option {
-                    return Command::GenerateSite {
-                        input_path,
-                        output_dir_path,
-                    };
+                if let Option::InputPath(input_pathname) = option {
+                    if input_path == None {
+                        input_path = Some(input_pathname);
+                    }
+                } else if let Option::Language(tag) = option {
+                    if language_tag == None {
+                        language_tag = Some(tag);
+                    }
                 }
             }
 
-            Command::PrintHelp
+            let language_tag = language_tag.unwrap_or(String::from("en-CA"));
+
+            if input_path.is_some() {
+                Command::GenerateSite {
+                    input_path: input_path.unwrap(),
+                    output_dir_path,
+                    language_tag,
+                }
+            } else {
+                Command::PrintHelp
+            }
+        }
+        Some(Option::Language(language_tag)) => {
+            let mut input_path = None;
+            let mut output_dir_path = None;
+
+            while let Some(option) = opts.next() {
+                if let Option::InputPath(input_pathname) = option {
+                    if input_path == None {
+                        input_path = Some(input_pathname);
+                    }
+                } else if let Option::OutputPath(output_path) = option {
+                    if output_dir_path == None {
+                        output_dir_path = Some(output_path);
+                    }
+                }
+            }
+
+            let output_dir_path = output_dir_path.unwrap_or(String::from("dist"));
+
+            if input_path.is_some() {
+                Command::GenerateSite {
+                    input_path: input_path.unwrap(),
+                    output_dir_path,
+                    language_tag,
+                }
+            } else {
+                Command::PrintHelp
+            }
         }
         None => Command::PrintHelp,
     }

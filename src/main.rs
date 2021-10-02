@@ -24,22 +24,23 @@ fn main() -> std::io::Result<()> {
         Command::GenerateSite {
             input_path,
             output_dir_path,
-        } => Some((input_path, output_dir_path)),
+            language_tag,
+        } => Some((input_path, output_dir_path, language_tag)),
     };
 
     if site_options == None {
         return Ok(());
     }
 
-    let (file_name, output_dir) = site_options.unwrap();
+    let (file_name, output_dir, language_tag) = site_options.unwrap();
     let input_path = path::Path::new(&file_name);
 
     if input_path.is_dir() {
         let site = StaticSite::from_directory(input_path)?;
-        site.create(path::Path::new(&output_dir))?;
+        site.create(path::Path::new(&output_dir), &language_tag)?;
     } else if input_path.is_file() {
         let site = StaticSite::from_file(input_path);
-        site.create(path::Path::new(&output_dir))?;
+        site.create(path::Path::new(&output_dir), &language_tag)?;
     }
 
     Ok(())
@@ -56,6 +57,7 @@ fn print_help() {
     println!("\t-h, --help\t\t\tPrint this screen");
     println!("\t-i <PATH>, --input <PATH>\tGenerate HTML files from TXT files. PATH can be a path to an individual file, or to a folder");
     println!("\t-o <PATH>, --output <PATH>\tName the output directory. Default is './dist'.");
+    println!("\t-l <TAG>, --lang <TAG>\t\tMark HTML document with language TAG, i.e., en-CA.");
     println!("\n");
 }
 
