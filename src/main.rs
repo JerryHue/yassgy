@@ -54,7 +54,8 @@ fn print_help() {
     println!("OPTIONS:");
     println!("\t-v, --version\t\t\tPrint the version of the compiled package");
     println!("\t-h, --help\t\t\tPrint this screen");
-    println!("\t-i <PATH, --input <PATH>\tGenerate HTML files from TXT files. PATH can be a path to an individual file, or to a folder");
+    println!("\t-i <PATH>, --input <PATH>\tGenerate HTML files from TXT files. PATH can be a path to an individual file, or to a folder");
+    println!("\t-l <TAG>, --lang <TAG>\t\tMark HTML document with language TAG, i.e., en-CA.");
     println!("\n");
 }
 
