@@ -114,7 +114,7 @@ impl StaticSite {
         (text_file_paths, dir_paths)
     }
 
-    pub fn create<P: AsRef<path::Path>>(&self, output_dir: P) -> io::Result<()> {
+    pub fn create<P: AsRef<path::Path>>(&self, output_dir: P, lang_tag: &str) -> io::Result<()> {
         let mut index: Vec<(String, path::PathBuf)> = vec![];
 
         let output_folder_path = output_dir.as_ref();
@@ -136,7 +136,7 @@ impl StaticSite {
         }
 
         for file in self.file_paths.iter() {
-            let page = HtmlPage::new(file)?;
+            let page = HtmlPage::new(file, lang_tag)?;
 
             let relative_file_path = file
                 .as_path()
@@ -155,7 +155,7 @@ impl StaticSite {
         }
 
         if self.include_index {
-            StaticSite::create_index(output_dir, &index[..])
+            StaticSite::create_index(output_dir, &index[..], lang_tag)
         } else {
             Ok(())
         }
@@ -164,6 +164,7 @@ impl StaticSite {
     fn create_index<P: AsRef<path::Path>>(
         output_folder: P,
         index: &[(String, path::PathBuf)],
+	lang_tag: &str
     ) -> io::Result<()> {
         let mut out_file = fs::File::create(output_folder.as_ref().join("index.html"))?;
 
@@ -186,7 +187,7 @@ impl StaticSite {
         out_file.write_all(
             format!(
                 "<!doctype html>
-<html lang=\"en\">
+<html lang=\"{lang_tag}\">
 <head>
     <meta charset=\"utf-8\">
     <title>Index</title>
@@ -196,6 +197,7 @@ impl StaticSite {
     {body}
 </body>
 </html>",
+		lang_tag = lang_tag,
                 body = ul
             )
             .as_bytes(),

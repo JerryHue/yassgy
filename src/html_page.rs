@@ -30,6 +30,7 @@ pub struct HtmlPage {
     file_name: path::PathBuf,
     title_from_file: Option<String>,
     html_body: String,
+    language_tag: String
 }
 
 impl HtmlPage {
@@ -49,7 +50,7 @@ impl HtmlPage {
         ))
     }
 
-    pub fn new<P: AsRef<path::Path>>(file_name: &P) -> io::Result<HtmlPage> {
+    pub fn new<P: AsRef<path::Path>>(file_name: &P, language_tag: &str) -> io::Result<HtmlPage> {
         HtmlPage::is_path_to_text_file(&file_name)?;
 
         let file = fs::File::open(file_name)?;
@@ -78,6 +79,7 @@ impl HtmlPage {
             file_name: Box::new(file_name.as_ref()).to_path_buf(),
             title_from_file,
             html_body,
+	    language_tag: language_tag.to_owned()
         })
     }
 
@@ -134,7 +136,7 @@ impl HtmlPage {
             out_file.write_all(
                 format!(
                     "<!doctype html>
-<html lang=\"en\">
+<html lang=\"{lang_tag}\">
 <head>
     <meta charset=\"utf-8\">
     <title>{title}</title>
@@ -144,6 +146,7 @@ impl HtmlPage {
     {body}
 </body>
 </html>",
+		    lang_tag = self.language_tag,
                     title = self.title(),
                     body = self.html_body
                 )
@@ -153,7 +156,7 @@ impl HtmlPage {
             out_file.write_all(
                 format!(
                     "<!doctype html>
-<html lang=\"en\">
+<html lang=\"{lang_tag}\">
 <head>
     <meta charset=\"utf-8\">
     <title>{title}</title>
@@ -164,6 +167,7 @@ impl HtmlPage {
     {body}
 </body>
 </html>",
+		    lang_tag = self.language_tag,
                     body = self.html_body,
                     title = self.title()
                 )
