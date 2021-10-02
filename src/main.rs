@@ -1,8 +1,8 @@
+mod command;
 mod html_page;
 mod static_site;
-mod command;
-use static_site::StaticSite;
 use command::Command;
+use static_site::StaticSite;
 use std::env;
 use std::path;
 
@@ -13,7 +13,7 @@ fn main() -> std::io::Result<()> {
     let command = command::get_command_from_args(env::args());
 
     let site_options = match command {
-	Command::PrintHelp => {
+        Command::PrintHelp => {
             print_help();
             None
         }
@@ -21,12 +21,15 @@ fn main() -> std::io::Result<()> {
             print_version();
             None
         }
-        Command::GenerateSite { input_path, language_tag } => Some((input_path, language_tag)),
+        Command::GenerateSite {
+            input_path,
+            language_tag,
+        } => Some((input_path, language_tag)),
     };
 
     if site_options == None {
         return Ok(());
-    } 
+    }
 
     let (file_name, language_tag) = site_options.unwrap();
     let input_path = path::Path::new(&file_name);

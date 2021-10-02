@@ -30,7 +30,7 @@ pub struct HtmlPage {
     file_name: path::PathBuf,
     title_from_file: Option<String>,
     html_body: String,
-    language_tag: String
+    language_tag: String,
 }
 
 impl HtmlPage {
@@ -79,7 +79,7 @@ impl HtmlPage {
             file_name: Box::new(file_name.as_ref()).to_path_buf(),
             title_from_file,
             html_body,
-	    language_tag: language_tag.to_owned()
+            language_tag: language_tag.to_owned(),
         })
     }
 
@@ -146,7 +146,7 @@ impl HtmlPage {
     {body}
 </body>
 </html>",
-		    lang_tag = self.language_tag,
+                    lang_tag = self.language_tag,
                     title = self.title(),
                     body = self.html_body
                 )
@@ -167,7 +167,7 @@ impl HtmlPage {
     {body}
 </body>
 </html>",
-		    lang_tag = self.language_tag,
+                    lang_tag = self.language_tag,
                     body = self.html_body,
                     title = self.title()
                 )

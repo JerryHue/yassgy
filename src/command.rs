@@ -1,24 +1,27 @@
-use std::option;
 use std::env::Args;
+use std::option;
 
 #[derive(Debug)]
 enum Option {
     Help,
     Version,
     InputPath(String),
-    Language(String)
+    Language(String),
 }
 
 #[derive(Debug)]
 pub enum Command {
     PrintHelp,
     PrintVersion,
-    GenerateSite{ input_path: String, language_tag: String }
+    GenerateSite {
+        input_path: String,
+        language_tag: String,
+    },
 }
 
 fn categorize_arg_tokens(mut args: Args) -> Vec<Option> {
     let mut options = Vec::new();
-    
+
     args.next();
     while let option::Option::Some(arg_token) = args.next() {
         if arg_token == "-v" || arg_token == "--version" {
@@ -35,44 +38,50 @@ fn categorize_arg_tokens(mut args: Args) -> Vec<Option> {
             }
         }
     }
-    
+
     options
 }
 
 fn parse_opts_as_command(opts: Vec<Option>) -> Command {
-    if opts.len() == 0 {
+    if opts.is_empty() {
         return Command::PrintHelp;
     }
-    
+
     let mut opts = opts.into_iter();
-    
+
     let first_option = opts.next();
-    
+
     match first_option {
         Some(Option::Help) => Command::PrintHelp,
         Some(Option::Version) => Command::PrintVersion,
         Some(Option::InputPath(input_path)) => {
             let mut language_tag = String::from("en-CA");
-            
+
             while let Some(option) = opts.next() {
                 if let Option::Language(tag) = option {
                     language_tag = tag;
                     break;
                 }
             }
-            
-            Command::GenerateSite{ input_path, language_tag }
-        },
+
+            Command::GenerateSite {
+                input_path,
+                language_tag,
+            }
+        }
         Some(Option::Language(language_tag)) => {
             while let Some(option) = opts.next() {
                 if let Option::InputPath(input_path) = option {
-                    return Command::GenerateSite{ input_path, language_tag };
+                    return Command::GenerateSite {
+                        input_path,
+                        language_tag,
+                    };
                 }
             }
-            
+
             Command::PrintHelp
-        },
-        None => Command::PrintHelp
+        }
+        None => Command::PrintHelp,
     }
 }
 

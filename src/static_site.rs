@@ -164,7 +164,7 @@ impl StaticSite {
     fn create_index<P: AsRef<path::Path>>(
         output_folder: P,
         index: &[(String, path::PathBuf)],
-	lang_tag: &str
+        lang_tag: &str,
     ) -> io::Result<()> {
         let mut out_file = fs::File::create(output_folder.as_ref().join("index.html"))?;
 
@@ -197,7 +197,7 @@ impl StaticSite {
     {body}
 </body>
 </html>",
-		lang_tag = lang_tag,
+                lang_tag = lang_tag,
                 body = ul
             )
             .as_bytes(),
