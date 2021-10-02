@@ -1,24 +1,27 @@
-use std::option;
 use std::env::Args;
+use std::option;
 
 #[derive(Debug)]
 enum Option {
     Help,
     Version,
     InputPath(String),
-    OutputPath(String)
+    OutputPath(String),
 }
 
 #[derive(Debug)]
 pub enum Command {
     PrintHelp,
     PrintVersion,
-    GenerateSite{ input_path: String, output_dir_path: String }
+    GenerateSite {
+        input_path: String,
+        output_dir_path: String,
+    },
 }
 
 fn categorize_arg_tokens(mut args: Args) -> Vec<Option> {
     let mut options = Vec::new();
-    
+
     args.next();
     while let option::Option::Some(arg_token) = args.next() {
         if arg_token == "-v" || arg_token == "--version" {
@@ -35,7 +38,7 @@ fn categorize_arg_tokens(mut args: Args) -> Vec<Option> {
             }
         }
     }
-    
+
     options
 }
 
@@ -43,36 +46,42 @@ fn parse_opts_as_command(opts: Vec<Option>) -> Command {
     if opts.len() == 0 {
         return Command::PrintHelp;
     }
-    
+
     let mut opts = opts.into_iter();
-    
+
     let first_option = opts.next();
-    
+
     match first_option {
         Some(Option::Help) => Command::PrintHelp,
         Some(Option::Version) => Command::PrintVersion,
         Some(Option::InputPath(input_path)) => {
             let mut output_dir_path = String::from("dist");
-            
+
             while let Some(option) = opts.next() {
                 if let Option::OutputPath(output_path) = option {
                     output_dir_path = output_path;
                     break;
                 }
             }
-            
-            Command::GenerateSite{ input_path, output_dir_path }
-        },
+
+            Command::GenerateSite {
+                input_path,
+                output_dir_path,
+            }
+        }
         Some(Option::OutputPath(output_dir_path)) => {
             while let Some(option) = opts.next() {
                 if let Option::InputPath(input_path) = option {
-                    return Command::GenerateSite{ input_path, output_dir_path };
+                    return Command::GenerateSite {
+                        input_path,
+                        output_dir_path,
+                    };
                 }
             }
-            
+
             Command::PrintHelp
-        },
-        None => Command::PrintHelp
+        }
+        None => Command::PrintHelp,
     }
 }
 

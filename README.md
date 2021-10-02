@@ -12,6 +12,7 @@ Yassgy accepts the following options:
 * `-v` or `--version`: display the version of the build program. It does not accept any arguments.
 * `-h` or `--help`: display all the options one may use in Yassgy. It does not accept any arguments.
 * `-i` or `--input`: accepts a file name or a folder name as an argument to then generate the static site.
+* `-o` or `--output`: accepts a name for the output directory.
 
 ## Features
 

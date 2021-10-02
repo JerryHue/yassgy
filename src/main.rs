@@ -1,8 +1,8 @@
+mod command;
 mod html_page;
 mod static_site;
-mod command;
-use static_site::StaticSite;
 use command::Command;
+use static_site::StaticSite;
 use std::env;
 use std::path;
 
@@ -13,7 +13,7 @@ fn main() -> std::io::Result<()> {
     let command = command::get_command_from_args(env::args());
 
     let site_options = match command {
-	Command::PrintHelp => {
+        Command::PrintHelp => {
             print_help();
             None
         }
@@ -21,12 +21,15 @@ fn main() -> std::io::Result<()> {
             print_version();
             None
         }
-        Command::GenerateSite { input_path, output_dir_path } => Some((input_path, output_dir_path)),
+        Command::GenerateSite {
+            input_path,
+            output_dir_path,
+        } => Some((input_path, output_dir_path)),
     };
 
     if site_options == None {
         return Ok(());
-    } 
+    }
 
     let (file_name, output_dir) = site_options.unwrap();
     let input_path = path::Path::new(&file_name);
@@ -51,7 +54,8 @@ fn print_help() {
     println!("OPTIONS:");
     println!("\t-v, --version\t\t\tPrint the version of the compiled package");
     println!("\t-h, --help\t\t\tPrint this screen");
-    println!("\t-i <PATH, --input <PATH>\tGenerate HTML files from TXT files. PATH can be a path to an individual file, or to a folder");
+    println!("\t-i <PATH>, --input <PATH>\tGenerate HTML files from TXT files. PATH can be a path to an individual file, or to a folder");
+    println!("\t-o <PATH>, --output <PATH>\tName the output directory. Default is './dist'.");
     println!("\n");
 }
 
