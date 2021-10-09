@@ -57,6 +57,7 @@ fn print_help() {
     println!("\t-h, --help\t\t\tPrint this screen");
     println!("\t-i <PATH>, --input <PATH>\tGenerate HTML files from TXT files. PATH can be a path to an individual file, or to a folder");
     println!("\t-o <PATH>, --output <PATH>\tName the output directory. Default is './dist'.");
+    println!("\t-c <PATH>, --config <PATH>\tPass in config JSON file with properties for input, output, and lang, i.e., config.JSON.");
     println!("\t-l <TAG>, --lang <TAG>\t\tMark HTML document with language TAG, i.e., en-CA.");
     println!("\n");
 }

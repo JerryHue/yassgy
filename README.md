@@ -40,6 +40,7 @@ Yassgy accepts the following options:
 * `-l` or `--lang`: accepts a language tag to mark the HTML document with the proper language support.
 * `-c` or `--config`: accepts a JSON file including the properties for input, lang, and output. 
 
+
 ## Features
 
 Yassgy is currently on development phase, so several features may be added or scrapped in accordance to
