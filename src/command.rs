@@ -1,5 +1,6 @@
 use std::env::Args;
 use std::option;
+use std::fs;
 
 #[derive(Debug)]
 enum Option {
@@ -21,6 +22,24 @@ pub enum Command {
     },
 }
 
+fn parse_config(config: &String) -> Vec<Option> {
+    let mut options = Vec::new(); 
+
+    let file = fs::File::open(config).expect("file should open read only");
+    let json: serde_json::Value = serde_json::de::from_reader(file).expect("unable to read to json");
+
+    if let option::Option::Some(file_name) = json["input"].as_str() {
+        options.push(Option::InputPath(file_name.to_owned()));
+    }      
+    if let option::Option::Some(output_path) = json["output"].as_str() {
+        options.push(Option::OutputPath(output_path.to_owned()));
+    }
+    if let option::Option::Some(language_tag) = json["lang"].as_str(){
+        options.push(Option::Language(language_tag.to_owned()));
+    }
+    options
+}
+
 fn categorize_arg_tokens(mut args: Args) -> Vec<Option> {
     let mut options = Vec::new();
 
@@ -30,6 +49,10 @@ fn categorize_arg_tokens(mut args: Args) -> Vec<Option> {
             options.push(Option::Help);
         } else if arg_token == "-h" || arg_token == "--help" {
             options.push(Option::Version);
+        } else if arg_token == "-c" || arg_token == "--config" {
+            if let Some(file_config) = args.next() {
+                options = parse_config(&file_config);
+            }
         } else if arg_token == "-i" || arg_token == "--input" {
             if let option::Option::Some(file_name) = args.next() {
                 options.push(Option::InputPath(file_name));
