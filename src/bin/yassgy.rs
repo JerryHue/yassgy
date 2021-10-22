@@ -1,10 +1,6 @@
 mod command;
-mod html_page;
-mod static_site;
 use command::Command;
-use static_site::StaticSite;
 use std::env;
-use std::path;
 
 const PKG_VERSION: &str = env!("CARGO_PKG_VERSION");
 const PKG_NAME: &str = env!("CARGO_PKG_NAME");
@@ -33,17 +29,7 @@ fn main() -> std::io::Result<()> {
     }
 
     let (file_name, output_dir, language_tag) = site_options.unwrap();
-    let input_path = path::Path::new(&file_name);
-
-    if input_path.is_dir() {
-        let site = StaticSite::from_directory(input_path)?;
-        site.create(path::Path::new(&output_dir), &language_tag)?;
-    } else if input_path.is_file() {
-        let site = StaticSite::from_file(input_path);
-        site.create(path::Path::new(&output_dir), &language_tag)?;
-    }
-
-    Ok(())
+    yassgy::generate(file_name, output_dir, language_tag)
 }
 
 fn print_help() {
