@@ -14,7 +14,9 @@ enum ErrorKind {
 impl fmt::Display for ErrorKind {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            ErrorKind::PathNameNotTextFile => write!(f, "path to file is not txt file"),
+            ErrorKind::PathNameNotTextFile => {
+                write!(f, "path to file is not txt file")
+            }
         }
     }
 }
@@ -34,7 +36,9 @@ pub struct HtmlPage {
 }
 
 impl HtmlPage {
-    fn is_path_to_text_file<P: AsRef<path::Path>>(file_name: &P) -> io::Result<()> {
+    fn is_path_to_text_file<P: AsRef<path::Path>>(
+        file_name: &P,
+    ) -> io::Result<()> {
         let file_name_ref = file_name.as_ref();
 
         if let Some(extension) = file_name_ref.extension() {
@@ -50,7 +54,10 @@ impl HtmlPage {
         ))
     }
 
-    pub fn new<P: AsRef<path::Path>>(file_name: &P, language_tag: &str) -> io::Result<HtmlPage> {
+    pub fn new<P: AsRef<path::Path>>(
+        file_name: &P,
+        language_tag: &str,
+    ) -> io::Result<HtmlPage> {
         HtmlPage::is_path_to_text_file(&file_name)?;
 
         let file = fs::File::open(file_name)?;
@@ -109,7 +116,10 @@ impl HtmlPage {
             let third_line = &actual_lines[2];
 
             if second_line.is_empty() && third_line.is_empty() {
-                return (Some(first_line.clone()), &actual_lines[(start + 3)..=end]);
+                return (
+                    Some(first_line.clone()),
+                    &actual_lines[(start + 3)..=end],
+                );
             }
         }
 
@@ -124,7 +134,10 @@ impl HtmlPage {
         self.file_name.file_stem().expect("").to_string_lossy()
     }
 
-    pub fn write_to_file<P: AsRef<path::Path>>(&self, dir_path: P) -> io::Result<()> {
+    pub fn write_to_file<P: AsRef<path::Path>>(
+        &self,
+        dir_path: P,
+    ) -> io::Result<()> {
         let output_path = dir_path
             .as_ref()
             .join(self.file_name.file_name().unwrap())
