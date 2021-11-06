@@ -1,6 +1,6 @@
 use std::env::Args;
-use std::option;
 use std::fs;
+use std::option;
 
 #[derive(Debug)]
 enum Option {
@@ -22,19 +22,20 @@ pub enum Command {
     },
 }
 
-fn parse_config(config: &String) -> Vec<Option> {
-    let mut options = Vec::new(); 
+fn parse_config(config: &str) -> Vec<Option> {
+    let mut options = Vec::new();
 
     let file = fs::File::open(config).expect("file should open read only");
-    let json: serde_json::Value = serde_json::de::from_reader(file).expect("unable to read to json");
+    let json: serde_json::Value =
+        serde_json::de::from_reader(file).expect("unable to read to json");
 
     if let option::Option::Some(file_name) = json["input"].as_str() {
         options.push(Option::InputPath(file_name.to_owned()));
-    }      
+    }
     if let option::Option::Some(output_path) = json["output"].as_str() {
         options.push(Option::OutputPath(output_path.to_owned()));
     }
-    if let option::Option::Some(language_tag) = json["lang"].as_str(){
+    if let option::Option::Some(language_tag) = json["lang"].as_str() {
         options.push(Option::Language(language_tag.to_owned()));
     }
     options
@@ -87,7 +88,7 @@ fn parse_opts_as_command(opts: Vec<Option>) -> Command {
             let mut output_dir_path = None;
             let mut language_tag = None;
 
-            while let Some(option) = opts.next() {
+            for option in &mut opts {
                 if let Option::OutputPath(output_path) = option {
                     if output_dir_path == None {
                         output_dir_path = Some(output_path);
@@ -99,8 +100,10 @@ fn parse_opts_as_command(opts: Vec<Option>) -> Command {
                 }
             }
 
-            let output_dir_path = output_dir_path.unwrap_or(String::from("dist"));
-            let language_tag = language_tag.unwrap_or(String::from("en-CA"));
+            let output_dir_path =
+                output_dir_path.unwrap_or_else(|| String::from("dist"));
+            let language_tag =
+                language_tag.unwrap_or_else(|| String::from("en-CA"));
 
             Command::GenerateSite {
                 input_path,
@@ -112,7 +115,7 @@ fn parse_opts_as_command(opts: Vec<Option>) -> Command {
             let mut input_path = None;
             let mut language_tag = None;
 
-            while let Some(option) = opts.next() {
+            for option in &mut opts {
                 if let Option::InputPath(input_pathname) = option {
                     if input_path == None {
                         input_path = Some(input_pathname);
@@ -124,11 +127,12 @@ fn parse_opts_as_command(opts: Vec<Option>) -> Command {
                 }
             }
 
-            let language_tag = language_tag.unwrap_or(String::from("en-CA"));
+            let language_tag =
+                language_tag.unwrap_or_else(|| String::from("en-CA"));
 
-            if input_path.is_some() {
+            if let Some(input_path) = input_path {
                 Command::GenerateSite {
-                    input_path: input_path.unwrap(),
+                    input_path,
                     output_dir_path,
                     language_tag,
                 }
@@ -140,7 +144,7 @@ fn parse_opts_as_command(opts: Vec<Option>) -> Command {
             let mut input_path = None;
             let mut output_dir_path = None;
 
-            while let Some(option) = opts.next() {
+            for option in opts {
                 if let Option::InputPath(input_pathname) = option {
                     if input_path == None {
                         input_path = Some(input_pathname);
@@ -152,11 +156,12 @@ fn parse_opts_as_command(opts: Vec<Option>) -> Command {
                 }
             }
 
-            let output_dir_path = output_dir_path.unwrap_or(String::from("dist"));
+            let output_dir_path =
+                output_dir_path.unwrap_or_else(|| String::from("dist"));
 
-            if input_path.is_some() {
+            if let Some(input_path) = input_path {
                 Command::GenerateSite {
-                    input_path: input_path.unwrap(),
+                    input_path,
                     output_dir_path,
                     language_tag,
                 }

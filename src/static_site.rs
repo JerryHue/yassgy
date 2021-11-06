@@ -13,7 +13,9 @@ pub struct StaticSite {
 }
 
 impl StaticSite {
-    pub fn from_directory<P: AsRef<path::Path>>(input_path: P) -> io::Result<StaticSite> {
+    pub fn from_directory<P: AsRef<path::Path>>(
+        input_path: P,
+    ) -> io::Result<StaticSite> {
         let mut dir_paths: Vec<path::PathBuf> = Vec::new();
         let mut file_paths: Vec<path::PathBuf> = Vec::new();
 
@@ -25,7 +27,8 @@ impl StaticSite {
         let mut input_dir_entries = input_path.read_dir()?;
 
         loop {
-            let (mut txt_files, dirs) = StaticSite::get_txt_files_and_dirs(&mut input_dir_entries);
+            let (mut txt_files, dirs) =
+                StaticSite::get_txt_files_and_dirs(&mut input_dir_entries);
 
             file_paths.append(&mut txt_files);
 
@@ -38,7 +41,9 @@ impl StaticSite {
                 if let Ok(dir_entries) = input_path.read_dir() {
                     input_dir_entries = dir_entries;
                 } else {
-                    println!("A directory had to be skipped due to some error.");
+                    println!(
+                        "A directory had to be skipped due to some error."
+                    );
                 }
 
                 continue;
@@ -114,7 +119,11 @@ impl StaticSite {
         (text_file_paths, dir_paths)
     }
 
-    pub fn create<P: AsRef<path::Path>>(&self, output_dir: P, lang_tag: &str) -> io::Result<()> {
+    pub fn create<P: AsRef<path::Path>>(
+        &self,
+        output_dir: P,
+        lang_tag: &str,
+    ) -> io::Result<()> {
         let mut index: Vec<(String, path::PathBuf)> = vec![];
 
         let output_folder_path = output_dir.as_ref();
@@ -166,7 +175,8 @@ impl StaticSite {
         index: &[(String, path::PathBuf)],
         lang_tag: &str,
     ) -> io::Result<()> {
-        let mut out_file = fs::File::create(output_folder.as_ref().join("index.html"))?;
+        let mut out_file =
+            fs::File::create(output_folder.as_ref().join("index.html"))?;
 
         let mut ul = String::from("<ul>");
 

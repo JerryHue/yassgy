@@ -2,29 +2,10 @@
 
 Yet Another Static Site Generator, Yassgy for short, is, as it name entails, a static site generator.
 
-## Requirements
+## Setting up and development
 
-While Rust can compile programs into static executables, I have not tried to compile my projects in
-that way, yet. Thus, yassgy can only be used in a development environment for now.
-
-The tools you need are:
-
-- `rustc version 1.54 or above`
-- `cargo version 1.54 or above`
-
-Both tools can be installed in a bundle using `rustup`, the recommended tool to manage Rust toolchains.
-The tool can be found [here](https://www.rust-lang.org/tools/install).
-
-### If you are a Windows user
-
-Note that having installed the [`Microsoft C++ Build Tools`](https://visualstudio.microsoft.com/visual-cpp-build-tools/)
-is a requirement for `rustup`.
-
-After you have installed Rust, run the following command in the project's root folder:
-
-```cargo build```
-
-and you should have the binary `yassgy` in the `yassgy/target/debug` directory.
+To know more about setting up a development environment, check the 
+[contribution guidelines](./CONTRIBUTING.md).
 
 ## Usage
 

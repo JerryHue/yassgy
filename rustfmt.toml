@@ -1,0 +1,27 @@
+# Explicit formatting configuration
+
+# General formatting
+force_explicit_abi = true
+match_arm_leading_pipes = "Never"
+max_width = 80
+newline_style = "Unix"
+remove_nested_parens = true
+use_small_heuristics = "Default"
+use_try_shorthand = true
+
+# Importing and module-specific formatting
+reorder_imports = true
+reorder_modules = true
+
+# Struct-specific formatting
+use_field_init_shorthand = true
+
+# Function-specific formatting
+fn_args_layout = "Tall"
+
+# Macro-specific formatting
+merge_derives = true
+
+# Tabs-specific formatting
+hard_tabs = false
+tab_spaces = 4
