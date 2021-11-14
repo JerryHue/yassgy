@@ -91,3 +91,10 @@ cargo clippy
 However, since `clippy` produces a compilation of the project, I wouldn't
 recommend running every time you save a file, since it would slow down
 your productivity.
+
+#### Testing the code
+
+If your PR is addressing a new feature, then writing unit tests would be
+necessary. The unit test cases should both test private and public methods,
+so you will place them inside the same file as your code, in a `tests` module
+inside that file.

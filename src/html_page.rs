@@ -189,3 +189,31 @@ impl HtmlPage {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::io::Result as IoResult;
+
+    #[test]
+    fn file_name_refers_to_text_file() -> IoResult<()> {
+        let file_name = "file.txt";
+        HtmlPage::is_path_to_text_file(&file_name)
+    }
+
+    #[test]
+    fn file_name_does_not_refer_to_text_file() {
+        let file_name = "file.html";
+        let error = HtmlPage::is_path_to_text_file(&file_name);
+
+        assert!(error.is_err());
+    }
+
+    #[test]
+    fn file_name_does_not_have_extension() {
+        let file_name = "file";
+        let error = HtmlPage::is_path_to_text_file(&file_name);
+
+        assert!(error.is_err());
+    }
+}
