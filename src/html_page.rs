@@ -103,12 +103,12 @@ impl HtmlPage {
 
         for i in (0..lines.len()).rev() {
             if !lines[i].trim().is_empty() {
-                end = i;
+                end = i + 1;
                 break;
             }
         }
 
-        let actual_lines = &lines[start..=end];
+        let actual_lines = &lines[start..end];
 
         if actual_lines.len() > 3 {
             let first_line = &actual_lines[0];
@@ -215,5 +215,38 @@ mod tests {
         let error = HtmlPage::is_path_to_text_file(&file_name);
 
         assert!(error.is_err());
+    }
+
+    #[test]
+    fn valid_file_name_does_not_exist() {
+        let file_name = "file.txt";
+        let error = HtmlPage::new(&file_name, &"en-CA");
+
+        assert!(error.is_err());
+    }
+
+    #[test]
+    fn empty_file_is_read() {
+        let file_name = "testfiles/txt/empty.txt";
+        let page = HtmlPage::new(&file_name, &"en-CA").unwrap();
+        page.write_to_file("testfiles/txt").unwrap();
+
+        let actual_html =
+            fs::read_to_string("testfiles/txt/empty.html").unwrap();
+
+        assert_eq!(
+            actual_html,
+            "<!doctype html>
+<html lang=\"en-CA\">
+<head>
+    <meta charset=\"utf-8\">
+    <title>empty</title>
+    <meta name=\"viewport\" content=\"width=device-width, intial-scale=1\">
+</head>
+<body>
+    
+</body>
+</html>"
+        );
     }
 }
