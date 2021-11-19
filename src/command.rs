@@ -47,9 +47,9 @@ fn categorize_arg_tokens(mut args: Args) -> Vec<Option> {
     args.next();
     while let option::Option::Some(arg_token) = args.next() {
         if arg_token == "-v" || arg_token == "--version" {
-            options.push(Option::Help);
-        } else if arg_token == "-h" || arg_token == "--help" {
             options.push(Option::Version);
+        } else if arg_token == "-h" || arg_token == "--help" {
+            options.push(Option::Help);
         } else if arg_token == "-c" || arg_token == "--config" {
             if let Some(file_config) = args.next() {
                 options = parse_config(&file_config);

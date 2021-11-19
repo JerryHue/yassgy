@@ -1,10 +1,9 @@
 mod command;
-mod html_page;
-mod static_site;
+
 use command::Command;
-use static_site::StaticSite;
 use std::env;
 use std::path;
+use yassgy::static_site::StaticSite;
 
 const PKG_VERSION: &str = env!("CARGO_PKG_VERSION");
 const PKG_NAME: &str = env!("CARGO_PKG_NAME");
