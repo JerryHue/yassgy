@@ -2,6 +2,18 @@
 
 Yet Another Static Site Generator, Yassgy for short, is, as it name entails, a static site generator.
 
+## Installation
+
+Currently, `yassgy` is only offered through `crates.io` (through this [link](https://crates.io/crates/yassgy)). You will need `Rust` and `cargo`.
+
+Installation is as easy as writing:
+
+```bash
+cargo install yassgy
+```
+
+When `yassgy` reaches `v1.0.0`, `yassgy` will be offered as a prebuilt executable, so please look forward to it! :)
+
 ## Setting up and development
 
 To know more about setting up a development environment, check the 
